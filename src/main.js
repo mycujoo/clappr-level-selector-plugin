@@ -1,15 +1,15 @@
-import {Events, Styler, UICorePlugin, template} from 'clappr'
+// import {Events, Styler, UICorePlugin, template} from 'clappr'
 import pluginHtml from './public/level-selector.html'
 import pluginStyle from './public/style.scss'
 
 const AUTO = -1
 
-export default class LevelSelector extends UICorePlugin {
+export default class LevelSelector extends window.Clappr.UICorePlugin {
 
   static get version() { return VERSION }
 
   get name() { return 'level_selector' }
-  get template() { return template(pluginHtml) }
+  get template() { return window.Clappr.template(pluginHtml) }
 
   get attributes() {
     return {
@@ -26,6 +26,7 @@ export default class LevelSelector extends UICorePlugin {
   }
 
   bindEvents() {
+    const { Events } = window.Clappr
     this.listenTo(this.core, Events.CORE_READY, this.bindPlaybackEvents)
     this.listenTo(this.core.mediaControl, Events.MEDIACONTROL_CONTAINERCHANGED, this.reload)
     this.listenTo(this.core.mediaControl, Events.MEDIACONTROL_RENDERED, this.render)
@@ -33,6 +34,7 @@ export default class LevelSelector extends UICorePlugin {
   }
 
   unBindEvents() {
+    const { Events } = window.Clappr
     this.stopListening(this.core, Events.CORE_READY)
     this.stopListening(this.core.mediaControl, Events.MEDIACONTROL_CONTAINERCHANGED)
     this.stopListening(this.core.mediaControl, Events.MEDIACONTROL_RENDERED)
@@ -44,6 +46,7 @@ export default class LevelSelector extends UICorePlugin {
   }
 
   bindPlaybackEvents() {
+      const { Events } = window.Clappr
       var currentPlayback = this.core.getCurrentPlayback()
 
       this.listenTo(currentPlayback, Events.PLAYBACK_LEVELS_AVAILABLE, this.fillLevels)
@@ -76,7 +79,7 @@ export default class LevelSelector extends UICorePlugin {
 
   render() {
     if (this.shouldRender()) {
-      var style = Styler.getStyleFor(pluginStyle, {baseUrl: this.core.options.baseUrl})
+      var style = window.Clappr.Styler.getStyleFor(pluginStyle, {baseUrl: this.core.options.baseUrl})
 
       this.$el.html(this.template({'levels':this.levels, 'title': this.getTitle()}))
       this.$el.append(style)
